@@ -9,6 +9,9 @@ import Login from "./pages/Login";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
+import PatientsPage from "./pages/PatientsPage";
+import CalendarPage from "./pages/CalendarPage";
+import AuditPage from "./pages/AuditPage";
 
 const queryClient = new QueryClient();
 
@@ -25,9 +28,9 @@ const App = () => (
               <Route element={<Layout />}>
                 <Route path="/" element={<Index />} />
                 {/* ADD ALL CUSTOM PROTECTED ROUTES HERE */}
-                {/* Example: <Route path="/patients" element={<PatientsPage />} /> */}
-                {/* Example: <Route path="/calendar" element={<CalendarPage />} /> */}
-                {/* Example: <Route path="/audit" element={<AuditPage />} /> */}
+                <Route path="/patients" element={<PatientsPage />} />
+                <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/audit" element={<AuditPage />} />
               </Route>
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
