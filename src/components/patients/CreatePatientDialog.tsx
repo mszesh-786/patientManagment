@@ -4,7 +4,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/material/Button"; // Changed to Material UI Button
 import {
   Dialog,
   DialogContent,
@@ -12,18 +12,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/material/Dialog"; // Changed to Material UI Dialog components
+import { Input } from "@/components/material/Input"; // Changed to Material UI Input
+import { Label } from "@/components/material/Label"; // Changed to Material UI Label
 import { usePatients } from "@/hooks/use-patients";
 import { Patient } from "@/types";
+import { FormControl, FormHelperText } from "@mui/material"; // For Material UI form control and error messages
 
 const patientFormSchema = z.object({
   full_name: z.string().min(1, "Full name is required"),
@@ -80,78 +74,57 @@ const CreatePatientDialog: React.FC<CreatePatientDialogProps> = ({ children }) =
             Fill in the details below to add a new patient.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
-            <FormField
-              control={form.control}
-              name="full_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
+          <FormControl error={!!form.formState.errors.full_name}>
+            <Label htmlFor="full_name">Full Name</Label>
+            <Input
+              id="full_name"
+              placeholder="John Doe"
+              {...form.register("full_name")}
+              helperText={form.formState.errors.full_name?.message}
             />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="john.doe@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </FormControl>
+          <FormControl error={!!form.formState.errors.email}>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="john.doe@example.com"
+              {...form.register("email")}
+              helperText={form.formState.errors.email?.message}
             />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input placeholder="123-456-7890" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </FormControl>
+          <FormControl error={!!form.formState.errors.phone}>
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
+              placeholder="123-456-7890"
+              {...form.register("phone")}
+              helperText={form.formState.errors.phone?.message}
             />
-            <FormField
-              control={form.control}
-              name="date_of_birth"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date of Birth</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </FormControl>
+          <FormControl error={!!form.formState.errors.date_of_birth}>
+            <Label htmlFor="date_of_birth">Date of Birth</Label>
+            <Input
+              id="date_of_birth"
+              type="date"
+              {...form.register("date_of_birth")}
+              helperText={form.formState.errors.date_of_birth?.message}
             />
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="123 Main St" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </FormControl>
+          <FormControl error={!!form.formState.errors.address}>
+            <Label htmlFor="address">Address</Label>
+            <Input
+              id="address"
+              placeholder="123 Main St"
+              {...form.register("address")}
+              helperText={form.formState.errors.address?.message}
             />
-            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting ? "Creating..." : "Create Patient"}
-            </Button>
-          </form>
-        </Form>
+          </FormControl>
+          <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? "Creating..." : "Create Patient"}
+          </Button>
+        </form>
       </DialogContent>
     </Dialog>
   );

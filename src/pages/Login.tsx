@@ -4,12 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/material/Button";
+import { Input } from "@/components/material/Input"; // Changed to Material UI Input
+import { Label } from "@/components/material/Label"; // Changed to Material UI Label
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/material/Card";
+import { useToast } from "@/components/ui/use-toast"; // Keeping shadcn toast for now
 import { MadeWithDyad } from "@/components/made-with-dyad";
+import { FormHelperText } from "@mui/material"; // For error messages
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -71,13 +72,9 @@ const Login: React.FC = () => {
                 type="email"
                 placeholder="m@example.com"
                 {...register("email")}
-                className={errors.email ? "border-destructive" : ""}
+                error={!!errors.email}
+                helperText={errors.email?.message}
               />
-              {errors.email && (
-                <p className="text-destructive text-sm mt-1">
-                  {errors.email.message}
-                </p>
-              )}
             </div>
             <div>
               <Label htmlFor="password">Password</Label>
@@ -86,13 +83,9 @@ const Login: React.FC = () => {
                 type="password"
                 placeholder="••••••••"
                 {...register("password")}
-                className={errors.password ? "border-destructive" : ""}
+                error={!!errors.password}
+                helperText={errors.password?.message}
               />
-              {errors.password && (
-                <p className="text-destructive text-sm mt-1">
-                  {errors.password.message}
-                </p>
-              )}
             </div>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Logging in..." : "Login"}
