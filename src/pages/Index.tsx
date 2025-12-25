@@ -1,8 +1,8 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/material/Card"; // New imports
+import { Button } from "@/components/material/Button"; // New import
 
 const Index = () => {
   const { user, profile, loading } = useAuth();
@@ -27,8 +27,8 @@ const Index = () => {
             <p className="text-lg text-gray-600 dark:text-gray-400">
               Please log in to access the application.
             </p>
-            <Button asChild>
-              <Link to="/login">Go to Login</Link>
+            <Button asChild to="/login">
+              Go to Login
             </Button>
           </CardContent>
         </Card>
@@ -50,15 +50,15 @@ const Index = () => {
             You are logged in as a {profile?.role || "staff member"}.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg">
-              <Link to="/patients">Manage Patients</Link>
+            <Button asChild to="/patients" size="lg">
+              Manage Patients
             </Button>
-            <Button asChild size="lg">
-              <Link to="/calendar">View Calendar</Link>
+            <Button asChild to="/calendar" size="lg">
+              View Calendar
             </Button>
             {profile?.role === "admin" && (
-              <Button asChild size="lg">
-                <Link to="/audit">View Audit Log</Link>
+              <Button asChild to="/audit" size="lg">
+                View Audit Log
               </Button>
             )}
           </div>

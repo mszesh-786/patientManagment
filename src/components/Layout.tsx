@@ -1,14 +1,15 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/material/Button"; // New import
 import { MadeWithDyad } from "./made-with-dyad";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@/components/ui/sheet"; // Keeping shadcn Sheet for now
 import { MenuIcon } from "lucide-react";
+import IconButton from '@mui/material/IconButton'; // For MenuIcon
 
 const Layout: React.FC = () => {
   const { user, role, signOut } = useAuth();
@@ -50,10 +51,10 @@ const Layout: React.FC = () => {
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <IconButton color="inherit" size="medium"> {/* Use IconButton for MenuIcon */}
                   <MenuIcon className="h-6 w-6" />
                   <span className="sr-only">Toggle navigation menu</span>
-                </Button>
+                </IconButton>
               </SheetTrigger>
               <SheetContent side="right">
                 <nav className="flex flex-col gap-4 py-6">
