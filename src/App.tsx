@@ -1,5 +1,4 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster as Sonner } from "@/components/ui/sonner"; // Keep Sonner
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -12,7 +11,7 @@ import Layout from "./components/Layout";
 import PatientsPage from "./pages/PatientsPage";
 import CalendarPage from "./pages/CalendarPage";
 import AuditPage from "./pages/AuditPage";
-import PatientRegistrationPage from "./pages/PatientRegistrationPage"; // New import
+import PatientRegistrationPage from "./pages/PatientRegistrationPage";
 
 // Material UI imports
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -107,8 +106,8 @@ const App = () => (
     <ThemeProvider theme={theme}>
       <CssBaseline /> {/* Provides a consistent baseline for styling */}
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
+        {/* Removed shadcn/ui Toaster */}
+        <Sonner /> {/* Keep Sonner for toast notifications */}
         <BrowserRouter>
           <AuthProvider>
             <Routes>
@@ -118,7 +117,7 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   {/* ADD ALL CUSTOM PROTECTED ROUTES HERE */}
                   <Route path="/patients" element={<PatientsPage />} />
-                  <Route path="/patients/register" element={<PatientRegistrationPage />} /> {/* New route */}
+                  <Route path="/patients/register" element={<PatientRegistrationPage />} />
                   <Route path="/calendar" element={<CalendarPage />} />
                   <Route path="/audit" element={<AuditPage />} />
                 </Route>

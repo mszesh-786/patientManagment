@@ -30,7 +30,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({ children }: { ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<StaffProfile | null>(null);
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             logAudit("LOGOUT");
           }
         }
-        setLoading(false);
+        setLoading(false); // Ensure loading is set to false after auth state change
       },
     );
 
@@ -91,10 +91,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               setProfile(data);
               setRole(data.role);
             }
+          })
+          .finally(() => { // Ensure loading is set to false after initial profile fetch
             setLoading(false);
           });
       } else {
-        setLoading(false);
+        setLoading(false); // Ensure loading is set to false if no initial user
       }
     });
 
@@ -109,14 +111,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email,
       password,
     });
-    setLoading(false);
+    setLoading(false); // Ensure loading is set to false after sign-in attempt
     return { error };
   };
 
   const signOut = async () => {
     setLoading(true);
     const { error } = await supabase.auth.signOut();
-    setLoading(false);
+    setLoading(false); // Ensure loading is set to false after sign-out attempt
     return { error };
   };
 
