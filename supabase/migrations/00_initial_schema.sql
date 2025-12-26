@@ -1,3 +1,9 @@
+-- Function to get the user's role from staff_profiles (moved here to ensure it's created first)
+CREATE OR REPLACE FUNCTION public.get_user_role()
+RETURNS public.staff_role AS $$
+  SELECT role FROM public.staff_profiles WHERE id = auth.uid();
+$$ LANGUAGE sql STABLE;
+
 -- Create ENUM for staff roles
 DO $$ BEGIN
   CREATE TYPE public.staff_role AS ENUM ('admin', 'practitioner');
