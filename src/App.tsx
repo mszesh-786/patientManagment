@@ -12,6 +12,7 @@ import Layout from "./components/Layout";
 import PatientsPage from "./pages/PatientsPage";
 import CalendarPage from "./pages/CalendarPage";
 import AuditPage from "./pages/AuditPage";
+import PatientRegistrationPage from "./pages/PatientRegistrationPage"; // New import
 
 // Material UI imports
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -66,13 +67,56 @@ const theme = createTheme({
         },
       },
     },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          // Custom styles for TextField root if needed
+          '& .MuiInputLabel-root': {
+            // Styles for the label
+            fontSize: '0.875rem', // text-sm
+            fontWeight: 500, // font-medium
+            color: 'hsl(var(--foreground))', // text-foreground
+            marginBottom: '0.5rem', // space-y-2 for label+input
+            transform: 'translate(14px, 12px) scale(1)', // Default position
+            '&.Mui-focused': {
+              color: 'hsl(var(--primary))', // Focused color
+            },
+            '&.Mui-error': {
+              color: 'hsl(var(--destructive))', // Error color
+            },
+            '&.MuiInputLabel-shrink': {
+              transform: 'translate(14px, -9px) scale(0.75)', // Shrunk position
+            },
+          },
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '0.5rem', // Match shadcn border-radius
+            '& fieldset': {
+              borderColor: 'hsl(var(--border))', // Default border color
+            },
+            '&:hover fieldset': {
+              borderColor: 'hsl(var(--input))', // Hover border color
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: 'hsl(var(--ring))', // Focused border color
+            },
+            '&.Mui-error fieldset': {
+              borderColor: 'hsl(var(--destructive))', // Error border color
+            },
+            '& .MuiOutlinedInput-input': {
+              padding: '0.625rem 0.75rem', // px-3 py-2
+              height: 'auto', // Allow content to dictate height
+            },
+          },
+        },
+      },
+    },
   },
 });
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider theme={theme}>
-      <CssBaseline /> {/* Provides a consistent baseline for styling */}
+      <CssBaseline />
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -80,6 +124,7 @@ const App = () => (
           <AuthProvider>
             <Routes>
               <Route path="/login" element={<Login />} />
+              <Route path="/register-patient" element={<PatientRegistrationPage />} /> {/* New route */}
               <Route element={<ProtectedRoute />}>
                 <Route element={<Layout />}>
                   <Route path="/" element={<Index />} />

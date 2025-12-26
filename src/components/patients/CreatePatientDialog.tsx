@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useForm, Controller } from "react-hook-form"; // Import Controller
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/material/Button";
@@ -14,10 +14,8 @@ import {
   DialogTrigger,
 } from "@/components/material/Dialog";
 import { Input } from "@/components/material/Input";
-import { Label } from "@/components/material/Label";
 import { usePatients } from "@/hooks/use-patients";
 import { Patient } from "@/types";
-import { FormControl, FormHelperText } from "@mui/material";
 
 const patientFormSchema = z.object({
   full_name: z.string().min(1, "Full name is required"),
@@ -39,12 +37,12 @@ const CreatePatientDialog: React.FC<CreatePatientDialogProps> = ({ children }) =
 
   const {
     handleSubmit,
-    control, // Get control from useForm
+    control,
     formState: { errors, isSubmitting },
-    reset, // Get reset from useForm
+    reset,
   } = useForm<PatientFormInputs>({
     resolver: zodResolver(patientFormSchema),
-    defaultValues: { // Add default values for controlled components
+    defaultValues: {
       full_name: "",
       email: "",
       phone: "",
@@ -64,7 +62,7 @@ const CreatePatientDialog: React.FC<CreatePatientDialogProps> = ({ children }) =
     createPatient(newPatient, {
       onSuccess: () => {
         setIsOpen(false);
-        reset(); // Reset form fields on success
+        reset();
       },
     });
   };
@@ -84,81 +82,73 @@ const CreatePatientDialog: React.FC<CreatePatientDialogProps> = ({ children }) =
             name="full_name"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <FormControl fullWidth error={!!error}>
-                <Label htmlFor="full_name" required>Full Name</Label>
-                <Input
-                  id="full_name"
-                  placeholder="John Doe"
-                  {...field}
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              </FormControl>
+              <Input
+                id="full_name"
+                label="Full Name"
+                placeholder="John Doe"
+                {...field}
+                error={!!error}
+                helperText={error?.message}
+                required
+              />
             )}
           />
           <Controller
             name="email"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <FormControl fullWidth error={!!error}>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="john.doe@example.com"
-                  {...field}
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              </FormControl>
+              <Input
+                id="email"
+                label="Email"
+                type="email"
+                placeholder="john.doe@example.com"
+                {...field}
+                error={!!error}
+                helperText={error?.message}
+              />
             )}
           />
           <Controller
             name="phone"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <FormControl fullWidth error={!!error}>
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  placeholder="123-456-7890"
-                  {...field}
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              </FormControl>
+              <Input
+                id="phone"
+                label="Phone"
+                placeholder="123-456-7890"
+                {...field}
+                error={!!error}
+                helperText={error?.message}
+              />
             )}
           />
           <Controller
             name="date_of_birth"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <FormControl fullWidth error={!!error}>
-                <Label htmlFor="date_of_birth">Date of Birth</Label>
-                <Input
-                  id="date_of_birth"
-                  type="date"
-                  {...field}
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              </FormControl>
+              <Input
+                id="date_of_birth"
+                label="Date of Birth"
+                type="date"
+                {...field}
+                error={!!error}
+                helperText={error?.message}
+                InputLabelProps={{ shrink: true }} // Ensures label is always shrunk for date input
+              />
             )}
           />
           <Controller
             name="address"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <FormControl fullWidth error={!!error}>
-                <Label htmlFor="address">Address</Label>
-                <Input
-                  id="address"
-                  placeholder="123 Main St"
-                  {...field}
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              </FormControl>
+              <Input
+                id="address"
+                label="Address"
+                placeholder="123 Main St"
+                {...field}
+                error={!!error}
+                helperText={error?.message}
+              />
             )}
           />
           <Button type="submit" className="w-full" disabled={isSubmitting}>
