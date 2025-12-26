@@ -1,20 +1,20 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form"; // Import Controller
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/material/Button";
-import { Input } from "@/components/material/Input"; // Changed to Material UI Input
-import { Label } from "@/components/material/Label"; // Changed to Material UI Label
+import { Input } from "@/components/material/Input";
+import { Label } from "@/components/material/Label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/material/Card";
-import { useToast } from "@/components/ui/use-toast"; // Keeping shadcn toast for now
+import { useToast } from "@/components/ui/use-toast";
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { FormHelperText } from "@mui/material"; // For error messages
+import { FormControl, FormHelperText } from "@mui/material";
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email("Invalid email address").min(1, "Email is required"),
+  password: z.string().min(6, "Password must be at least 6 characters").min(1, "Password is required"),
 });
 
 type LoginFormInputs = z.infer<typeof loginSchema>;
@@ -25,11 +25,15 @@ const Login: React.FC = () => {
   const { toast } = useToast();
 
   const {
-    register,
     handleSubmit,
+    control, // Get control from useForm
     formState: { errors, isSubmitting },
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
+    defaultValues: { // Add default values for controlled components
+      email: "",
+      password: "",
+    },
   });
 
   React.useEffect(() => {
@@ -65,28 +69,40 @@ const Login: React.FC = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                {...register("email")}
-                error={!!errors.email}
-                helperText={errors.email?.message}
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                {...register("password")}
-                error={!!errors.password}
-                helperText={errors.password?.message}
-              />
-            </div>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl fullWidth error={!!error}>
+                  <Label htmlFor="email" required>Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    {...field} // Spread field props (value, onChange, onBlur, name, ref)
+                    error={!!error} // Pass error prop to MuiTextField
+                    helperText={error?.message} // Pass error message as helperText
+                  />
+                </FormControl>
+              )}
+            />
+            <Controller
+              name="password"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl fullWidth error={!!error}>
+                  <Label htmlFor="password" required>Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    {...field} // Spread field props
+                    error={!!error}
+                    helperText={error?.message}
+                  />
+                </FormControl>
+              )}
+            />
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Logging in..." : "Login"}
             </Button>
