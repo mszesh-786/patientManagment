@@ -1,14 +1,16 @@
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form"; // Import Controller
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate, Link } from "react-router-dom"; // Import Link
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/material/Button";
 import { Input } from "@/components/material/Input";
+import { Label } from "@/components/material/Label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/material/Card";
 import { useToast } from "@/components/ui/use-toast";
 import { MadeWithDyad } from "@/components/made-with-dyad";
+import { FormControl, FormHelperText } from "@mui/material";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address").min(1, "Email is required"),
@@ -24,11 +26,11 @@ const Login: React.FC = () => {
 
   const {
     handleSubmit,
-    control,
+    control, // Get control from useForm
     formState: { errors, isSubmitting },
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
+    defaultValues: { // Add default values for controlled components
       email: "",
       password: "",
     },
@@ -71,43 +73,40 @@ const Login: React.FC = () => {
               name="email"
               control={control}
               render={({ field, fieldState: { error } }) => (
-                <Input
-                  id="email"
-                  label="Email" // Use label prop directly
-                  type="email"
-                  placeholder="m@example.com"
-                  {...field}
-                  error={!!error}
-                  helperText={error?.message}
-                />
+                <FormControl fullWidth error={!!error}>
+                  <Label htmlFor="email" required>Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    {...field} // Spread field props (value, onChange, onBlur, name, ref)
+                    error={!!error} // Pass error prop to MuiTextField
+                    helperText={error?.message} // Pass error message as helperText
+                  />
+                </FormControl>
               )}
             />
             <Controller
               name="password"
               control={control}
               render={({ field, fieldState: { error } }) => (
-                <Input
-                  id="password"
-                  label="Password" // Use label prop directly
-                  type="password"
-                  placeholder="••••••••"
-                  {...field}
-                  error={!!error}
-                  helperText={error?.message}
-                />
+                <FormControl fullWidth error={!!error}>
+                  <Label htmlFor="password" required>Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    {...field} // Spread field props
+                    error={!!error}
+                    helperText={error?.message}
+                  />
+                </FormControl>
               )}
             />
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Logging in..." : "Login"}
             </Button>
           </form>
-          <div className="mt-4 text-center text-sm">
-            Don't have an account?{" "}
-            <Link to="/register-patient" className="text-blue-500 hover:underline">
-              Register as a Patient
-            </dyad-command>
-            </Link>
-          </div>
         </CardContent>
       </Card>
       <MadeWithDyad />
