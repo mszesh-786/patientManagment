@@ -5,10 +5,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { usePatients } from "@/hooks/use-patients";
 import { Patient } from "@/types";
 import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/material/Button"; // Changed to Material UI Button
 import CreatePatientDialog from "@/components/patients/CreatePatientDialog";
 import { format } from "date-fns";
 import { logAudit } from "@/lib/audit";
+import { useAuth } from "@/contexts/AuthContext"; // Import useAuth to check role
+import { showSuccess, showError } from "@/utils/toast";
 
 const columns: ColumnDef<Patient>[] = [
   {
@@ -46,11 +48,29 @@ const columns: ColumnDef<Patient>[] = [
 ];
 
 const PatientsPage: React.FC = () => {
-  const { patients, isLoading, isError, error } = usePatients();
+  const { patients, isLoading, isError, error, createPatient } = usePatients();
+  const { role } = useAuth();
 
   React.useEffect(() => {
     logAudit("PATIENT_VIEW");
   }, []);
+
+  const handleSeedData = async () => {
+    const dummyPatients = [
+      { full_name: "Alice Smith", email: "alice@example.com", phone: "555-111-2222", date_of_birth: "1985-03-15", address: "123 Oak Ave" },
+      { full_name: "Bob Johnson", email: "bob@example.com", phone: "555-333-4444", date_of_birth: "1990-07-22", address: "456 Pine St" },
+      { full_name: "Charlie Brown", email: "charlie@example.com", phone: "555-555-6666", date_of_birth: "1978-11-01", address: "789 Maple Ln" },
+    ];
+
+    try {
+      for (const patient of dummyPatients) {
+        await createPatient(patient);
+      }
+      showSuccess("Test patients added successfully!");
+    } catch (err: any) {
+      showError(`Failed to add test patients: ${err.message}`);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -75,9 +95,16 @@ const PatientsPage: React.FC = () => {
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Patients</h1>
-        <CreatePatientDialog>
-          <Button>Add New Patient</Button>
-        </CreatePatientDialog>
+        <div className="flex space-x-4">
+          {role === "admin" && ( // Only allow admins to seed data
+            <Button onClick={handleSeedData} variant="secondary">
+              Seed Test Data
+            </Button>
+          )}
+          <CreatePatientDialog>
+            <Button>Add New Patient</Button>
+          </CreatePatientDialog>
+        </div>
       </div>
       <DataTable columns={columns} data={patients || []} />
     </div>

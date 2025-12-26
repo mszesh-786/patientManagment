@@ -1,21 +1,22 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/material/Button"; // New import
+import { Button } from "@/components/material/Button";
 import { MadeWithDyad } from "./made-with-dyad";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
-} from "@/components/ui/sheet"; // Keeping shadcn Sheet for now
+} from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
-import IconButton from '@mui/material/IconButton'; // For MenuIcon
+import IconButton from '@mui/material/IconButton';
 
 const Layout: React.FC = () => {
   const { user, role, signOut } = useAuth();
 
   const navLinks = [
     { path: "/patients", label: "Patients", roles: ["admin", "practitioner"] },
+    { path: "/patients/register", label: "Register Patient", roles: ["admin", "practitioner"] }, // New link
     { path: "/calendar", label: "Calendar", roles: ["admin", "practitioner"] },
     { path: "/audit", label: "Audit Log", roles: ["admin"] },
   ];
@@ -51,7 +52,7 @@ const Layout: React.FC = () => {
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <IconButton color="inherit" size="medium"> {/* Use IconButton for MenuIcon */}
+                <IconButton color="inherit" size="medium">
                   <MenuIcon className="h-6 w-6" />
                   <span className="sr-only">Toggle navigation menu</span>
                 </IconButton>

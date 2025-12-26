@@ -12,6 +12,7 @@ import Layout from "./components/Layout";
 import PatientsPage from "./pages/PatientsPage";
 import CalendarPage from "./pages/CalendarPage";
 import AuditPage from "./pages/AuditPage";
+import PatientRegistrationPage from "./pages/PatientRegistrationPage"; // New import
 
 // Material UI imports
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -24,24 +25,24 @@ const queryClient = new QueryClient();
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#0F172A', // Dark blue/black
-      contrastText: '#F8FAFC', // Light text
+      main: '#1E293B', // Corresponds to --primary (dark blue-gray)
+      contrastText: '#F8FAFC', // Corresponds to --primary-foreground (off-white)
     },
     secondary: {
-      main: '#E2E8F0', // Light gray
-      contrastText: '#0F172A', // Dark text
+      main: '#F1F5F9', // Corresponds to --secondary (light gray)
+      contrastText: '#1E293B', // Corresponds to --secondary-foreground (dark blue-gray)
     },
     error: {
-      main: '#EF4444', // Red for destructive
+      main: '#EF4444', // Corresponds to --destructive (red)
       contrastText: '#F8FAFC',
     },
     background: {
-      default: '#F8FAFC', // Light background
-      paper: '#FFFFFF', // White card background
+      default: '#F8FAFC', // Corresponds to --background (off-white)
+      paper: '#FFFFFF', // Corresponds to --card (white)
     },
     text: {
-      primary: '#0F172A', // Dark text
-      secondary: '#64748B', // Muted text
+      primary: '#0F172A', // Corresponds to --foreground (very dark blue)
+      secondary: '#64748B', // Muted text, using a common gray
     },
   },
   typography: {
@@ -66,6 +67,38 @@ const theme = createTheme({
         },
       },
     },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          // Ensure labels are visible and styled correctly
+          transform: 'translate(14px, 16px) scale(1)', // Default position for outlined input
+          '&.Mui-focused': {
+            color: 'var(--foreground)', // Keep foreground color when focused
+          },
+          '&.Mui-error': {
+            color: 'var(--destructive)', // Error color
+          },
+          '&.MuiInputLabel-shrink': {
+            transform: 'translate(14px, -9px) scale(0.75)', // Shrink position
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'var(--destructive)', // Error border color
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'var(--primary)', // Hover border color
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'var(--primary)', // Focused border color
+          },
+        },
+      },
+    },
   },
 });
 
@@ -85,6 +118,7 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   {/* ADD ALL CUSTOM PROTECTED ROUTES HERE */}
                   <Route path="/patients" element={<PatientsPage />} />
+                  <Route path="/patients/register" element={<PatientRegistrationPage />} /> {/* New route */}
                   <Route path="/calendar" element={<CalendarPage />} />
                   <Route path="/audit" element={<AuditPage />} />
                 </Route>
