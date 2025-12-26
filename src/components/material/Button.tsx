@@ -12,6 +12,7 @@ interface ButtonProps {
   asChild?: boolean;
   to?: string; // For Link usage with react-router-dom
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 const Button: React.FC<ButtonProps> = ({

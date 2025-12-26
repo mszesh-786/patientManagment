@@ -66,7 +66,7 @@ const Login: React.FC = () => {
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <FormControl fullWidth error={!!error}>
-                  <Label htmlFor="email" required>Email</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     type="email"
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <FormControl fullWidth error={!!error}>
-                  <Label htmlFor="password" required>Password</Label>
+                  <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
                     type="password"

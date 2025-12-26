@@ -1,19 +1,16 @@
-import React from 'react';
-import MuiTextField, { TextFieldProps } from '@mui/material/TextField';
+import MuiTextField, { type TextFieldProps } from "@mui/material/TextField";
 
-interface InputProps extends TextFieldProps {
-  // Add any specific props if needed, otherwise TextFieldProps covers most cases
-}
+type InputProps = TextFieldProps;
 
-const Input: React.FC<InputProps> = ({ className, ...props }) => {
+export function Input(props: InputProps) {
+  const { className, ...rest } = props;
+
   return (
     <MuiTextField
-      variant="outlined" // Default Material UI variant
-      fullWidth // Make it take full width by default
       className={className}
-      {...props}
+      variant="outlined"
+      fullWidth
+      {...rest} // caller can override variant/fullWidth if they pass them
     />
   );
-};
-
-export { Input };
+}

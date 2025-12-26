@@ -1,3 +1,9 @@
+-- Function to get the user's role from staff_profiles
+CREATE OR REPLACE FUNCTION public.get_user_role()
+RETURNS public.staff_role AS $$
+  SELECT role FROM public.staff_profiles WHERE id = auth.uid();
+$$ LANGUAGE sql STABLE;
+
 -- Trigger to create a staff_profile for new users
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$

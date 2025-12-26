@@ -79,7 +79,7 @@ const PatientRegistrationPage: React.FC = () => {
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <FormControl fullWidth error={!!error}>
-                  <Label htmlFor="full_name" required>Full Name</Label>
+                  <Label htmlFor="full_name">Full Name</Label>
                   <Input
                     id="full_name"
                     placeholder="John Doe"
