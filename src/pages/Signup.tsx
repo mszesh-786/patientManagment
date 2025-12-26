@@ -3,33 +3,35 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate, Link } from "react-router-dom"; // Import Link
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/material/Button";
 import { Input } from "@/components/material/Input";
 import { Label } from "@/components/material/Label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/material/Card";
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { FormControl, FormHelperText } from "@mui/material";
-import { showSuccess, showError } from "@/utils/toast"; // Import standardized toast functions
+import { FormControl } from "@mui/material";
+import { showSuccess, showError } from "@/utils/toast";
 
-const loginSchema = z.object({
+const signupSchema = z.object({
+  full_name: z.string().min(1, "Full name is required"),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
   password: z.string().min(6, "Password must be at least 6 characters").min(1, "Password is required"),
 });
 
-type LoginFormInputs = z.infer<typeof loginSchema>;
+type SignupFormInputs = z.infer<typeof signupSchema>;
 
-const Login: React.FC = () => {
-  const { signIn, user, loading } = useAuth();
+const Signup: React.FC = () => {
+  const { signUp, user, loading } = useAuth();
   const navigate = useNavigate();
 
   const {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormInputs>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<SignupFormInputs>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
+      full_name: "",
       email: "",
       password: "",
     },
@@ -41,13 +43,13 @@ const Login: React.FC = () => {
     }
   }, [user, loading, navigate]);
 
-  const onSubmit = async (data: LoginFormInputs) => {
-    const { error } = await signIn(data.email, data.password);
+  const onSubmit = async (data: SignupFormInputs) => {
+    const { error } = await signUp(data.email, data.password, data.full_name);
     if (error) {
-      showError(error.message); // Use standardized error toast
+      showError(error.message);
     } else {
-      showSuccess("Login Successful! Welcome back."); // Use standardized success toast
-      navigate("/");
+      showSuccess("Registration Successful! Please check your email to confirm your account.");
+      navigate("/login"); // Redirect to login after successful registration
     }
   };
 
@@ -56,11 +58,27 @@ const Login: React.FC = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center">
-            Clinic MVP Login
+            Register for Clinic MVP
           </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <Controller
+              name="full_name"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl fullWidth error={!!error}>
+                  <Label htmlFor="full_name" required>Full Name</Label>
+                  <Input
+                    id="full_name"
+                    placeholder="Jane Doe"
+                    {...field}
+                    error={!!error}
+                    helperText={error?.message}
+                  />
+                </FormControl>
+              )}
+            />
             <Controller
               name="email"
               control={control}
@@ -70,7 +88,7 @@ const Login: React.FC = () => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="m@example.com"
+                    placeholder="j.doe@example.com"
                     {...field}
                     error={!!error}
                     helperText={error?.message}
@@ -96,13 +114,13 @@ const Login: React.FC = () => {
               )}
             />
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Logging in..." : "Login"}
+              {isSubmitting ? "Registering..." : "Register"}
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-blue-500 hover:underline">
-              Sign Up
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-500 hover:underline">
+              Login
             </Link>
           </p>
         </CardContent>
@@ -112,4 +130,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Signup;

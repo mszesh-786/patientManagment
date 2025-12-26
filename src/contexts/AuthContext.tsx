@@ -25,12 +25,13 @@ interface AuthContextType {
   role: StaffRole | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, full_name: string) => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { ReactNode }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<StaffProfile | null>(null);
@@ -115,16 +116,24 @@ export const AuthProvider = ({ children }: { ReactNode }) => {
     return { error };
   };
 
-  const signOut = async () => {
+  const signUp = async (email: string, password: string, full_name: string) => {
     setLoading(true);
-    const { error } = await supabase.auth.signOut();
-    setLoading(false); // Ensure loading is set to false after sign-out attempt
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name,
+        },
+      },
+    });
+    setLoading(false);
     return { error };
   };
 
   return (
     <AuthContext.Provider
-      value={{ session, user, profile, role, loading, signIn, signOut }}
+      value={{ session, user, profile, role, loading, signIn, signUp, signOut }}
     >
       {children}
     </AuthContext.Provider>
