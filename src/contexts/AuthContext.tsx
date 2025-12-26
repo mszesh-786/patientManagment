@@ -131,6 +131,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error };
   };
 
+  const signOut = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      logAudit("LOGOUT");
+    }
+    setLoading(false);
+    return { error };
+  };
+
   return (
     <AuthContext.Provider
       value={{ session, user, profile, role, loading, signIn, signUp, signOut }}
