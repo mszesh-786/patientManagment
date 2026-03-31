@@ -11,6 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/material/
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { FormControl, FormHelperText } from "@mui/material";
 import { showSuccess, showError } from "@/utils/toast"; // Import standardized toast functions
+import ProductList from "./ProductList";
+import Rating from "./Rating";
+import FileFolderStructure from "./FileFolderStructure";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address").min(1, "Email is required"),
@@ -52,8 +55,14 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
-      <Card className="w-full max-w-md">
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", flexDirection: "column", gap: "2rem", flexWrap: "wrap" }}>
+     <FileFolderStructure /> 
+      
+      
+      
+    {/*  
+    <ProductList /> 
+    <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center">
             Clinic MVP Login
@@ -107,7 +116,7 @@ const Login: React.FC = () => {
           </p>
         </CardContent>
       </Card>
-      <MadeWithDyad />
+      <MadeWithDyad /> */}
     </div>
   );
 };
