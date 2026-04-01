@@ -56,12 +56,11 @@ const Login: React.FC = () => {
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", flexDirection: "column", gap: "2rem", flexWrap: "wrap" }}>
-     <FileFolderStructure /> 
+
       
       
       
-    {/*  
-    <ProductList /> 
+    
     <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center">
@@ -116,7 +115,7 @@ const Login: React.FC = () => {
           </p>
         </CardContent>
       </Card>
-      <MadeWithDyad /> */}
+      <MadeWithDyad />
     </div>
   );
 };
