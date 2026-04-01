@@ -3,6 +3,7 @@ name: Deploy Test
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy-test:
@@ -12,17 +13,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup pnpm
+        run: corepack prepare pnpm@9.12.3 --activate
+
+      - name: Verify pnpm
+        run: pnpm --version
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -31,7 +43,7 @@ jobs:
         run: pnpm test -- --runInBand
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Run E2E tests
         env:
@@ -39,7 +51,7 @@ jobs:
           PLAYWRIGHT_BASE_URL: ${{ vars.TEST_BASE_URL }}
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        run: npx playwright test
+        run: pnpm exec playwright test
 
       - name: Build
         run: pnpm build
