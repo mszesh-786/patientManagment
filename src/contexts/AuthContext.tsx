@@ -39,84 +39,57 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (_event, currentSession) => {
-        setSession(currentSession);
-        setUser(currentSession?.user || null);
+    console.log("AuthContext: Initializing auth listener...");
+   const { data: authListener } = supabase.auth.onAuthStateChange(
+  async (_event, currentSession) => {
+    setSession(currentSession);
+    setUser(currentSession?.user || null);
 
-        if (currentSession?.user) {
-          const { data, error } = await supabase
-            .from("staff_profiles")
-            .select("*")
-            .eq("id", currentSession.user.id)
-            .single();
-
-          if (error) {
-            console.error("Error fetching staff profile:", error);
-            setProfile(null);
-            setRole(null);
-          } else {
-            setProfile(data);
-            setRole(data.role);
-            if (_event === "SIGNED_IN") {
-              logAudit("LOGIN", { metadata: { email: currentSession.user.email } });
-            }
-          }
-        } else {
-          setProfile(null);
-          setRole(null);
-          if (_event === "SIGNED_OUT") {
-            logAudit("LOGOUT");
-          }
-        }
-        setLoading(false); // Ensure loading is set to false after auth state change
-      },
-    );
-
-    // Initial check
-    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
-      setSession(initialSession);
-      setUser(initialSession?.user || null);
-      if (initialSession?.user) {
-        supabase
+    try {
+      if (currentSession?.user) {
+        const { data, error } = await supabase
           .from("staff_profiles")
           .select("*")
-          .eq("id", initialSession.user.id)
-          .single()
-          .then(({ data, error }) => {
-            if (error) {
-              console.error("Error fetching initial staff profile:", error);
-              setProfile(null);
-              setRole(null);
-            } else {
-              setProfile(data);
-              setRole(data.role);
-            }
-          })
-          .finally(() => { // Ensure loading is set to false after initial profile fetch
-            setLoading(false);
-          });
-      } else {
-        setLoading(false); // Ensure loading is set to false if no initial user
-      }
-    });
+          .eq("user_id", currentSession.user.id) // <-- key change
+          .single();
 
-    return () => {
-      authListener.unsubscribe();
-    };
+        if (error) {
+          console.error("Profile fetch error:", error);
+          setProfile(null);
+          setRole(null);
+        } else {
+          setProfile(data);
+          setRole(data.role);
+        }
+      } else {
+        setProfile(null);
+        setRole(null);
+      }
+    } catch (e) {
+      console.error("Auth state handler crashed:", e);
+      setProfile(null);
+      setRole(null);
+    } finally {
+      setLoading(false); // <-- ALWAYS run
+    }
+  }
+);
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    console.log("AuthContext: Attempting sign in...");
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    setLoading(false); // Ensure loading is set to false after sign-in attempt
+    console.log("AuthContext: Sign in attempt finished, error:", error);
+    setLoading(false);
     return { error };
   };
 
   const signUp = async (email: string, password: string, full_name: string) => {
+    console.log("AuthContext: Attempting sign up...");
     setLoading(true);
     const { error } = await supabase.auth.signUp({
       email,
@@ -127,16 +100,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       },
     });
+    console.log("AuthContext: Sign up attempt finished, error:", error);
     setLoading(false);
     return { error };
   };
 
   const signOut = async () => {
+    console.log("AuthContext: Attempting sign out...");
     setLoading(true);
     const { error } = await supabase.auth.signOut();
     if (!error) {
       logAudit("LOGOUT");
     }
+    console.log("AuthContext: Sign out attempt finished, error:", error);
     setLoading(false);
     return { error };
   };
