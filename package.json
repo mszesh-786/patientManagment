@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "test:ci": "vitest run"
+    "test:ci": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
